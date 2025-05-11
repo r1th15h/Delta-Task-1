@@ -11,6 +11,7 @@ const reset = document.getElementById("reset");
 const rp = document.getElementById("redpts");
 const bp = document.getElementById("bluepts");
 const pausename = document.getElementById("pausename");
+const leaderboard = document.getElementById("leaderboard");
 
 
 /*--------------------------------------------------------------CONSTANTS-----------------------------------------------------------------------------------------------*/
@@ -121,6 +122,7 @@ let totalTimeCounter = setInterval(()=>{
 
 reset.addEventListener("click", resets);
 pause.addEventListener("click",paused);
+leaderboard.addEventListener("click",rank);
 
 dots.forEach((dot)=>{
     dot.addEventListener("click",titanMovement)
@@ -330,6 +332,7 @@ function titanMovement(dot){
                 break;
             }
         }
+        checkForTitanElimination();
     }
     updatePoints();
     checkForGameOver();
@@ -382,14 +385,70 @@ function gameOver(){
     if(redpts>bluepts){
         winner.textContent = `Red Wins!!`;
         winner.style.color = "red";
+        document.body.append(winner);
+        leaderboards(redpts);
+    }
+    else if(redpts == bluepts){
+        winner.textContent = "Game Draw!"
+        winner.style.color = 'aliceblue';
+        document.body.append(winner);
+        leaderboards(redpts);
     }
     else{
         winner.textContent = `Blue Wins!!`;
         winner.style.color = "rgb(24, 166, 255)";
+        document.body.append(winner);
+        leaderboards(bluepts);
     }
-    document.body.append(winner);
 
+}
 
+function checkForTitanElimination(){
+    let elimination;
+    let elim;
+    for(let dot of dots){
+        elimination = false;
+        if(dot.classList.contains("red") && (dot.classList[2]>6)){
+            for(elim of connectingEdges[Number(dot.classList[2])-1]){
+                for(let node of dots){
+                    if(node.classList.contains("blue") && node.classList.contains(`${elim}`)){
+                        elimination = true;
+                        break;
+                    }
+                    else{
+                        elimination = false;
+                    }
+                }
+                if(!elimination){
+                    break;
+                }
+            }
+            if(elimination){
+                dot.classList.remove("red");
+                break;
+            }
+        }
+        else if(dot.classList.contains("blue") && (dot.classList[2]>6)){
+            for(elim of connectingEdges[Number(dot.classList[2])-1]){
+                for(let node of dots){
+                    if(node.classList.contains("red") && node.classList.contains(`${elim}`)){
+                        elimination = true;
+                        break;
+                    }
+                    else{
+                        elimination = false;                    
+                    }
+                }
+                if(!elimination){
+                    break;
+                }
+            }
+            if(elimination){
+                dot.classList.remove("blue");
+                break;
+            }
+        }
+    }
 }
 
 function checkForGameOver(){
@@ -556,5 +615,15 @@ function paused(){
             dot.addEventListener("click",titanMovement)
         })
     }
+}
+function leaderboards(pts){
+    let lead = [JSON.parse(localStorage.getItem("leaderboard"))];    
+    lead.push(pts);
+    lead.sort((a,b) => b-a);
+    lead = lead.slice(0,5);
+    localStorage.setItem("leaderboard",JSON.stringify(lead));
+}
+function rank(){
+    console.log(`High Scores : ${JSON.parse(localStorage.getItem("leaderboard"))}`);
 }
 
