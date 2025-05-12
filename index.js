@@ -12,6 +12,8 @@ const rp = document.getElementById("redpts");
 const bp = document.getElementById("bluepts");
 const pausename = document.getElementById("pausename");
 const leaderboard = document.getElementById("leaderboard");
+const moveaud = new Audio("audio/move.mp3");
+const elimaud = new Audio("audio/titanelim.mp3");
 
 
 /*--------------------------------------------------------------CONSTANTS-----------------------------------------------------------------------------------------------*/
@@ -271,6 +273,7 @@ function titanMovement(dot){
             }}
         if(dotOk1 && !dot.target.classList.contains("red") && !dot.target.classList.contains("blue")){
             count++;
+            moveaud.play();
             changeTurn();
             if(count % 2 !=0){
                 resetTimerRed();
@@ -291,6 +294,7 @@ function titanMovement(dot){
             }}
         if(dotOk2 && !dot.target.classList.contains("red") && !dot.target.classList.contains("blue")){
             count++;
+            moveaud.play();
             changeTurn();
             if(count % 2 !=0){
                 resetTimerRed();
@@ -311,6 +315,7 @@ function titanMovement(dot){
             for(let node of dots){
                 if(count % 2 ==0 && node.classList.contains(`${stringNums}`) && node.classList.contains("red") && !dot.target.classList.contains("blue")){
                     count++;
+                    moveaud.play();
                     changeTurn();
                     resetTimerRed();          
                     node.classList.remove("red");
@@ -320,6 +325,7 @@ function titanMovement(dot){
                 }
                 else if(count % 2 !=0 && node.classList.contains(String(nums)) && node.classList.contains("blue") && !dot.target.classList.contains("red")){
                     count++;
+                    moveaud.play();
                     changeTurn();
                     resetTimerBlue();
                     node.classList.remove("blue");
@@ -424,6 +430,7 @@ function checkForTitanElimination(){
                 }
             }
             if(elimination){
+                elimaud.play();
                 dot.classList.remove("red");
                 break;
             }
@@ -444,6 +451,7 @@ function checkForTitanElimination(){
                 }
             }
             if(elimination){
+                elimaud.play();
                 dot.classList.remove("blue");
                 break;
             }
