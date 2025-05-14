@@ -6,19 +6,28 @@ const dots = document.querySelectorAll(".dots");
 const redPlayerTime = document.getElementById("redplayertime");
 const bluePlayerTime = document.getElementById("blueplayertime");
 const turn = document.getElementById("turn");
+const turns = document.getElementById("turnss");
 const pause = document.getElementById("pause");
 const reset = document.getElementById("reset");
+const undos = document.getElementById("undo");
+const redos = document.getElementById("redo");
 const rp = document.getElementById("redpts");
 const bp = document.getElementById("bluepts");
 const pausename = document.getElementById("pausename");
 const leaderboard = document.getElementById("leaderboard");
 const moveaud = new Audio("audio/move.mp3");
 const elimaud = new Audio("audio/titanelim.mp3");
+const winaud = new Audio("audio/win.mp3");
 
 
 /*--------------------------------------------------------------CONSTANTS-----------------------------------------------------------------------------------------------*/
 
-
+let movCurrent = [];
+let movArr2 = [];
+let movArr3 = [];
+let movElim = [];
+let movArr5 = [];
+let hist = [];
 let redTimer=15;
 let blueTimer=15;
 let totalTime = 600;
@@ -125,6 +134,8 @@ let totalTimeCounter = setInterval(()=>{
 reset.addEventListener("click", resets);
 pause.addEventListener("click",paused);
 leaderboard.addEventListener("click",rank);
+undos.addEventListener("click",undo);
+redos.addEventListener("click",redo);
 
 dots.forEach((dot)=>{
     dot.addEventListener("click",titanMovement)
@@ -190,7 +201,9 @@ function randomMove(){
                 for(let nodes2 of dots){
                     if(nodes2.classList.contains(`${j}`) && !nodes2.classList.contains("red") && !nodes2.classList.contains("blue")){
                         nodes2.classList.add("red");
+                        movCurrent.push(nodes2.classList[2]);
                         count++;
+                        updatePoints();
                         changeTurn();
                         dotOk4 = true;
                         break;
@@ -206,7 +219,9 @@ function randomMove(){
                 for(let nodes1 of dots){
                     if(nodes1.classList.contains(`${j}`) && !nodes1.classList.contains("blue") && !nodes1.classList.contains("red")){
                         nodes1.classList.add("blue");
+                        movCurrent.push(nodes1.classList[2]);
                         count++;
+                        updatePoints();
                         changeTurn();
                         dotOk4 = true;
                         break;
@@ -225,7 +240,9 @@ function randomMove(){
                 for(let nodes2 of dots){
                     if(nodes2.classList.contains(`${j}`) && !nodes2.classList.contains("red") && !nodes2.classList.contains("blue")){
                         nodes2.classList.add("red");
+                        movCurrent.push(nodes2.classList[2]);
                         count++;
+                        updatePoints();
                         changeTurn();
                         dotOk4 = true;
                         break;
@@ -241,7 +258,9 @@ function randomMove(){
                 for(let nodes1 of dots){
                     if(nodes1.classList.contains(`${j}`) && !nodes1.classList.contains("blue") && !nodes1.classList.contains("red")){
                         nodes1.classList.add("blue");
+                        movCurrent.push(nodes1.classList[2]);
                         count++;
+                        updatePoints();
                         changeTurn();
                         dotOk4 = true;
                         break;
@@ -272,16 +291,19 @@ function titanMovement(dot){
                 break;    
             }}
         if(dotOk1 && !dot.target.classList.contains("red") && !dot.target.classList.contains("blue")){
+            movCurrent.push(dot.target.classList[2]);
             count++;
             moveaud.play();
             changeTurn();
             if(count % 2 !=0){
                 resetTimerRed();
                 dot.target.classList.add('red');
+                history(dot.target.classList[2],0);
             }
             else if (count%2 ==0){
                 resetTimerBlue();
                 dot.target.classList.add('blue');
+                history(dot.target.classList[2],0);
             }
         }
     }
@@ -293,16 +315,19 @@ function titanMovement(dot){
                 break;    
             }}
         if(dotOk2 && !dot.target.classList.contains("red") && !dot.target.classList.contains("blue")){
+            movCurrent.push(dot.target.classList[2]);
             count++;
             moveaud.play();
             changeTurn();
             if(count % 2 !=0){
                 resetTimerRed();
                 dot.target.classList.add('red');
+                history(dot.target.classList[2],0);
             }
             else{
                 resetTimerBlue();
                 dot.target.classList.add('blue');
+                history(dot.target.classList[2],0);
             }
         }
             
@@ -314,22 +339,30 @@ function titanMovement(dot){
             let dotOk3 = false;
             for(let node of dots){
                 if(count % 2 ==0 && node.classList.contains(`${stringNums}`) && node.classList.contains("red") && !dot.target.classList.contains("blue")){
+                    movCurrent.push(dot.target.classList[2]);
+                    movArr3.push(node.classList[2]);
                     count++;
                     moveaud.play();
                     changeTurn();
                     resetTimerRed();          
                     node.classList.remove("red");
                     dot.target.classList.add("red");
+                    history(dot.target.classList[2],node.classList[2]);   
+                    checkForTitanElimination();
                     dotOk3 = true;
                     break;
                 }
                 else if(count % 2 !=0 && node.classList.contains(String(nums)) && node.classList.contains("blue") && !dot.target.classList.contains("red")){
+                    movCurrent.push(dot.target.classList[2]);
+                    movArr3.push(node.classList[2]);
                     count++;
                     moveaud.play();
                     changeTurn();
                     resetTimerBlue();
                     node.classList.remove("blue");
                     dot.target.classList.add('blue');
+                    history(dot.target.classList[2],node.classList[2]);
+                    checkForTitanElimination();
                     dotOk3 = true;
                     break;
                 }
@@ -338,7 +371,6 @@ function titanMovement(dot){
                 break;
             }
         }
-        checkForTitanElimination();
     }
     updatePoints();
     checkForGameOver();
@@ -406,57 +438,8 @@ function gameOver(){
         document.body.append(winner);
         leaderboards(bluepts);
     }
+    winaud.play();
 
-}
-
-function checkForTitanElimination(){
-    let elimination;
-    let elim;
-    for(let dot of dots){
-        elimination = false;
-        if(dot.classList.contains("red") && (dot.classList[2]>6)){
-            for(elim of connectingEdges[Number(dot.classList[2])-1]){
-                for(let node of dots){
-                    if(node.classList.contains("blue") && node.classList.contains(`${elim}`)){
-                        elimination = true;
-                        break;
-                    }
-                    else{
-                        elimination = false;
-                    }
-                }
-                if(!elimination){
-                    break;
-                }
-            }
-            if(elimination){
-                elimaud.play();
-                dot.classList.remove("red");
-                break;
-            }
-        }
-        else if(dot.classList.contains("blue") && (dot.classList[2]>6)){
-            for(elim of connectingEdges[Number(dot.classList[2])-1]){
-                for(let node of dots){
-                    if(node.classList.contains("red") && node.classList.contains(`${elim}`)){
-                        elimination = true;
-                        break;
-                    }
-                    else{
-                        elimination = false;                    
-                    }
-                }
-                if(!elimination){
-                    break;
-                }
-            }
-            if(elimination){
-                elimaud.play();
-                dot.classList.remove("blue");
-                break;
-            }
-        }
-    }
 }
 
 function checkForGameOver(){
@@ -597,6 +580,8 @@ function paused(){
         pause.title="Resume";
         pausename.textContent = "Resume";
         reset.style.cursor = "not-allowed";
+        undos.style.cursor = "not-allowed";
+        redos.style.cursor = "not-allowed";
         clearInterval(playtime);
         clearInterval(totalTimeCounter);
         dots.forEach((dot)=>{
@@ -608,6 +593,8 @@ function paused(){
         pause.title = "Pause";
         pausename.textContent = "Pause";
         reset.style.cursor = "pointer";
+        undos.style.cursor = "pointer";
+        redos.style.cursor = "pointer";
         reset.addEventListener("click",resets);
         totalTimeCounter = setInterval(()=>{
             if(totalTime==0){
@@ -624,14 +611,280 @@ function paused(){
         })
     }
 }
+
+/*-----------------------------------------------------------___HACKER___MODE___----------------------------------------------------------------------------*/
+
+function checkForTitanElimination(){
+    let elimination;
+    let elim;
+    let el = false;
+    for(let dot of dots){
+        elimination = false;
+        if(dot.classList.contains("red") && (dot.classList[2]>6)){
+            for(elim of connectingEdges[Number(dot.classList[2])-1]){
+                for(let node of dots){
+                    if(node.classList.contains("blue") && node.classList.contains(`${elim}`)){
+                        elimination = true;
+                        break;
+                    }
+                    else{
+                        elimination = false;
+                    }
+                }
+                if(!elimination){
+                    break;
+                }
+            }
+            if(elimination){
+                elimaud.play();
+                dot.classList.remove("red");
+                movElim.push(dot.classList[2]);
+                console.log("Red Titan Eliminated");
+                el=true;
+                break;
+            }
+        }
+        else if(dot.classList.contains("blue") && (dot.classList[2]>6)){
+            for(elim of connectingEdges[Number(dot.classList[2])-1]){
+                for(let node of dots){
+                    if(node.classList.contains("red") && node.classList.contains(`${elim}`)){
+                        elimination = true;
+                        break;
+                    }
+                    else{
+                        elimination = false;                    
+                    }
+                }
+                if(!elimination){
+                    break;
+                }
+            }
+            if(elimination){
+                elimaud.play();
+                dot.classList.remove("blue");
+                movElim.push(dot.classList[2]);
+                console.log("Blue Titan Eliminated!");
+                el=true;
+                break;
+            }
+        }
+    }
+    if(!el){
+        movElim.push(0);
+    }
+}
+
 function leaderboards(pts){
-    let lead = [JSON.parse(localStorage.getItem("leaderboard"))];    
+    let lead = JSON.parse(localStorage.getItem("leaderboard")) || [];
+    for(let k=0;k<3;k++){
+        if(lead[k]==undefined){
+            lead[k]=0;
+        }
+        if(lead[k] == pts){
+            pts = 0;
+        }
+    }  
     lead.push(pts);
     lead.sort((a,b) => b-a);
-    lead = lead.slice(0,5);
+    lead = lead.slice(0,3);
     localStorage.setItem("leaderboard",JSON.stringify(lead));
 }
+
 function rank(){
-    console.log(`High Scores : ${JSON.parse(localStorage.getItem("leaderboard"))}`);
+    leaderboards(0);
+    const isBox = document.getElementById("rankbox");
+    if(isBox){
+        isBox.remove();
+        leaderboard.textContent = "📶";
+        return;
+    }
+    else{
+        leaderboard.textContent = "❌";
+        const rankbox = document.createElement("div");
+        rankbox.id  = "rankbox";
+        rankbox.className = "leaderbox";
+        rankbox.innerHTML = `
+                                <h3 style = "margin-bottom:20px;">Top High Scores</h1>
+                                <div>1)${JSON.parse(localStorage.getItem("leaderboard"))[0]}</div>    
+                                <div>2)${JSON.parse(localStorage.getItem("leaderboard"))[1]}</div>    
+                                <div>3)${JSON.parse(localStorage.getItem("leaderboard"))[2]}</div>    
+                            `
+        turns.prepend(rankbox);
+    }
+    
+}
+
+function undo(){
+    if(count>0 && count <=8){
+        let temptitan1 = movCurrent.pop();
+        movArr2.push(temptitan1);
+        if(count % 2 !=0){
+            resetTimerBlue();
+        }
+        else{
+            resetTimerRed();
+        }
+        for(let node of dots){
+            if(node.classList.contains(`${temptitan1}`) && (node.classList.contains('red') || node.classList.contains('blue'))){
+                node.classList.remove('red');
+                node.classList.remove("blue");
+            }
+        }
+        updatePoints();
+        count--;
+        changeTurn();
+    }
+    else if(count>8){
+        let temptitan1 = movCurrent.pop();
+        movArr2.push(temptitan1);
+
+        if(movElim[movElim.length-1] !=0){
+            for(let dote of dots){
+                if(dote.classList.contains(`${movElim[movElim.length-1]}`)){
+                    if(count %2 !=0){
+                        dote.classList.add("blue");
+                        movElim.pop();
+                    }
+                    else{
+                        dote.classList.add("red");
+                        movElim.pop();
+                    }
+                }
+            }
+        }
+        else{
+            movElim.pop();
+        }
+
+        for(let node of dots){
+            if(node.classList.contains(`${temptitan1}`) && (node.classList.contains('red') || node.classList.contains('blue'))){
+                node.classList.remove('red');
+                node.classList.remove("blue");
+                for(let nodes of dots){
+                    if(nodes.classList.contains(`${movArr3[movArr3.length-1]}`)){
+                        movArr5.push(movArr3.pop());
+                        if(count % 2 !=0){
+                            nodes.classList.add("red");
+                            updatePoints();
+                            count--;
+                            changeTurn();
+                            resetTimerRed();
+                            break;
+                        }
+                        else{
+                            nodes.classList.add("blue");
+                            updatePoints();
+                            count--;
+                            changeTurn();
+                            resetTimerBlue();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+function redo(){
+    if(count<8 && movArr2[0]){
+        if(count % 2 !=0){
+            for(let node of dots){
+                if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
+                    node.classList.add("blue");
+                    movCurrent.push(node.classList[2]);
+                    movArr2.pop();
+                    count++;
+                    updatePoints();
+                    resetTimerBlue();
+                    changeTurn();
+                    break;
+                }
+            }
+        }
+        else{
+            for(let node of dots){
+                if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
+                    node.classList.add("red");
+                    movCurrent.push(node.classList[2]);
+                    movArr2.pop();
+                    count++;
+                    updatePoints();
+                    resetTimerRed();
+                    changeTurn();
+                    break;
+                }
+            }
+           
+        }
+    }
+    else if(count>=8 && movArr5[0]){
+        if(count % 2 !=0){
+            for(let node of dots){
+                if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
+                    node.classList.add("blue");
+                    movCurrent.push(node.classList[2]);
+                    movArr2.pop();
+                    for(let nodes of dots){
+                        if(nodes.classList.contains(`${movArr5[movArr5.length-1]}`)){
+                            nodes.classList.remove("red");
+                            nodes.classList.remove("blue");
+                            movArr3.push(movArr5.pop());
+                            break;
+                        }
+                    }
+                    count++;
+                    checkForTitanElimination();
+                    updatePoints();
+                    resetTimerBlue();
+                    changeTurn();
+                    break;
+                }
+            }
+        }
+        else{
+            for(let node of dots){
+                if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
+                    node.classList.add("red");
+                    movCurrent.push(node.classList[2]);
+                    movArr2.pop();
+                    for(let nodes of dots){
+                        if(nodes.classList.contains(`${movArr5[movArr5.length-1]}`)){
+                            nodes.classList.remove("red");
+                            nodes.classList.remove("blue");
+                            movArr3.push(movArr5.pop());
+                            break;
+                        }
+                    }
+                    count++;
+                    checkForTitanElimination();
+                    updatePoints();
+                    resetTimerRed();
+                    changeTurn();
+                    break;
+                }
+            }
+        }
+    }
+}
+
+function history(dot1,dot2){
+    if(count<=8){
+        if(count %2 !=0){
+            console.log(`Red: Placed Tile ${dot1}`);
+        }
+        else{
+            console.log(`Blue: Placed Tile ${dot1}`);
+        }
+    }
+    else{
+        if(count %2 !=0){
+            console.log(`Red: Moved Tile ${dot2} to Tile ${dot1}`);
+        }
+        else{
+            console.log(`Blue: Moved Tile ${dot2} to Tile ${dot1}`);
+        }
+    }
+    
 }
 

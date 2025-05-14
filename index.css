@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
 *{
     margin: 0;
     padding: 0;
@@ -5,13 +7,14 @@
 
 body{
     background-color: rgb(16, 16, 78);
+    font-family: "Audiowide",sans-serif;
 }
 
 .gamename{
     text-align: center;
     margin: 20px 0;
     font-size: 50px;
-    color: aliceblue;
+    color: rgb(7, 189, 189);
 }
 
 .buttons{
@@ -23,7 +26,7 @@ body{
 }
 
 .btnname{
-    color:aliceblue;
+    color:rgb(7, 189, 189);
     font-weight: bold;
     margin-top: 15px;
     margin-left: 15px;
@@ -72,17 +75,18 @@ body{
 .time{
     text-align: center;
     margin-top: 5px;
-    color: white;
+    color: rgb(7, 189, 189);
 }
 
 .box{
     display: grid;
+    border-radius: 20px;
     grid-template-columns: repeat(15,1fr);
     grid-template-rows: repeat(9,1fr);
     width: 90vw;
     height: 100vh;
     gap: 0.5vw;
-    background-color: rgba(0, 0, 0, 0.553);
+    background-color: rgba(0, 0, 0, 0.534);
     max-height: 700px;
     max-width: 700px;
     margin-bottom: 60px;
@@ -206,6 +210,14 @@ body{
     grid-column: 7;
 }
 
+.leaderbox{
+    text-align: center;
+    color: aliceblue;
+    background: #00000085;
+    margin-inline: 300px;
+    padding:20px;
+}
+
 @media screen and (max-width:1024px) {
     .timers{
         margin-left: 20px;
@@ -215,6 +227,12 @@ body{
     }
 }
 @media screen and (max-width:890px) {
+    .leaderbox{
+        margin-inline: auto;
+        width: 150px;
+        height: 100px;
+        margin-bottom: 20px;
+    }
     .gamename{
         margin-top: 0;
         font-size: xx-large;
