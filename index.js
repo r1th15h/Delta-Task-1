@@ -229,8 +229,7 @@ function randomMove(){
                 }
                 if(dotOk4){
                     break;
-                }
-                    
+                }    
             }
         }
     }
@@ -268,28 +267,27 @@ function randomMove(){
                 }
                 if(dotOk4){
                     break;
-                }
-                    
+                }       
             }
-
         }
     }
     else{
         count++;
         changeTurn();
     }
-  
 }
 
 function titanMovement(dot){
     let dotOk1 = false;
     let dotOk2 = false;
+
     if (count<6){
         for(let i=1 ;i<=6;i++){
             if(dot.target.classList.contains(`${i}`)){
                 dotOk1 = true;
                 break;    
-            }}
+            }
+        }
         if(dotOk1 && !dot.target.classList.contains("red") && !dot.target.classList.contains("blue")){
             movCurrent.push(dot.target.classList[2]);
             count++;
@@ -332,6 +330,7 @@ function titanMovement(dot){
         }
             
     }
+
     if(count>=8){
         let dotnum = Number(dot.target.classList[2]);
         for(let nums of connectingEdges[dotnum-1]){
@@ -420,6 +419,7 @@ function gameOver(){
     winner.style.marginTop = "50px";
     winner.style.color = "aliceblue";
     winner.style.textAlign = "center";
+
     if(redpts>bluepts){
         winner.textContent = `Red Wins!!`;
         winner.style.color = "red";
@@ -439,7 +439,6 @@ function gameOver(){
         leaderboards(bluepts);
     }
     winaud.play();
-
 }
 
 function checkForGameOver(){
@@ -471,6 +470,7 @@ function updatePoints(){
     let blueDotOk5 = false;
     let redtempCall = false;
     let bluetempCall = false;
+
     if(count %2 != 0){
         redpts =0;
         for(let edge of edges){
@@ -506,7 +506,6 @@ function updatePoints(){
         }
     }
 
-
     else{
         bluepts = 0;
         for(let edge of edges){
@@ -538,8 +537,6 @@ function updatePoints(){
             bp.textContent = "0";
         }
     }
-   
-
 }
 
 function resets(){
@@ -570,7 +567,6 @@ function resets(){
     },1000);
     resetTimerBlue();
     resetTimerRed();
-
 }
 
 function paused(){
@@ -588,6 +584,7 @@ function paused(){
             dot.removeEventListener("click",titanMovement);
         })
     }
+
     else if(pause.textContent ==`▶️`){
         pause.textContent = `⏸️`;
         pause.title = "Pause";
@@ -711,7 +708,6 @@ function rank(){
                             `
         turns.prepend(rankbox);
     }
-    
 }
 
 function undo(){
