@@ -217,6 +217,16 @@ body{
     margin-inline: 300px;
     padding:20px;
 }
+.movbox{
+    text-align: center;
+    color: aliceblue;
+    background: #00000085;
+    margin-inline: 500px;
+    padding:20px;
+    overflow-y: auto;
+    height: 250px;
+    font-size: xx-large;
+}
 
 @media screen and (max-width:1024px) {
     .timers{
@@ -229,6 +239,13 @@ body{
 @media screen and (max-width:890px) {
     .leaderbox{
         margin-inline: auto;
+        width: 150px;
+        height: 100px;
+        margin-bottom: 20px;
+    }
+    .movbox{
+        margin-inline: auto;
+        padding: 20px;
         width: 150px;
         height: 100px;
         margin-bottom: 20px;

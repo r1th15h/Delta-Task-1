@@ -13,6 +13,7 @@ const undos = document.getElementById("undo");
 const redos = document.getElementById("redo");
 const rp = document.getElementById("redpts");
 const bp = document.getElementById("bluepts");
+const moves = document.getElementById("history");
 const pausename = document.getElementById("pausename");
 const leaderboard = document.getElementById("leaderboard");
 const moveaud = new Audio("audio/move.mp3");
@@ -136,6 +137,7 @@ pause.addEventListener("click",paused);
 leaderboard.addEventListener("click",rank);
 undos.addEventListener("click",undo);
 redos.addEventListener("click",redo);
+moves.addEventListener("click",movHistory);
 
 dots.forEach((dot)=>{
     dot.addEventListener("click",titanMovement)
@@ -201,8 +203,10 @@ function randomMove(){
                 for(let nodes2 of dots){
                     if(nodes2.classList.contains(`${j}`) && !nodes2.classList.contains("red") && !nodes2.classList.contains("blue")){
                         nodes2.classList.add("red");
+                        moveaud.play();
                         movCurrent.push(nodes2.classList[2]);
                         count++;
+                        hist.push(`Red: Placed Tile ${nodes2.classList[2]}`);
                         updatePoints();
                         changeTurn();
                         dotOk4 = true;
@@ -219,8 +223,10 @@ function randomMove(){
                 for(let nodes1 of dots){
                     if(nodes1.classList.contains(`${j}`) && !nodes1.classList.contains("blue") && !nodes1.classList.contains("red")){
                         nodes1.classList.add("blue");
+                        moveaud.play();
                         movCurrent.push(nodes1.classList[2]);
                         count++;
+                        hist.push(`Blue: Placed Tile ${nodes1.classList[2]}`);
                         updatePoints();
                         changeTurn();
                         dotOk4 = true;
@@ -239,8 +245,10 @@ function randomMove(){
                 for(let nodes2 of dots){
                     if(nodes2.classList.contains(`${j}`) && !nodes2.classList.contains("red") && !nodes2.classList.contains("blue")){
                         nodes2.classList.add("red");
+                        moveaud.play();
                         movCurrent.push(nodes2.classList[2]);
                         count++;
+                        hist.push(`Red: Placed Tile ${nodes2.classList[2]}`);
                         updatePoints();
                         changeTurn();
                         dotOk4 = true;
@@ -257,8 +265,10 @@ function randomMove(){
                 for(let nodes1 of dots){
                     if(nodes1.classList.contains(`${j}`) && !nodes1.classList.contains("blue") && !nodes1.classList.contains("red")){
                         nodes1.classList.add("blue");
+                        moveaud.play();
                         movCurrent.push(nodes1.classList[2]);
                         count++;
+                        hist.push(`Blue: Placed Tile ${nodes1.classList[2]}`);
                         updatePoints();
                         changeTurn();
                         dotOk4 = true;
@@ -296,12 +306,12 @@ function titanMovement(dot){
             if(count % 2 !=0){
                 resetTimerRed();
                 dot.target.classList.add('red');
-                history(dot.target.classList[2],0);
+                hist.push(`Red : Placed Tile ${dot.target.classList[2]}`);
             }
             else if (count%2 ==0){
                 resetTimerBlue();
                 dot.target.classList.add('blue');
-                history(dot.target.classList[2],0);
+                hist.push(`Blue: Placed Tile ${dot.target.classList[2]}`);
             }
         }
     }
@@ -320,12 +330,12 @@ function titanMovement(dot){
             if(count % 2 !=0){
                 resetTimerRed();
                 dot.target.classList.add('red');
-                history(dot.target.classList[2],0);
+                hist.push(`Red: Placed Tile ${dot.target.classList[2]}`);
             }
             else{
                 resetTimerBlue();
                 dot.target.classList.add('blue');
-                history(dot.target.classList[2],0);
+                hist.push(`Blue: Placed Tile ${dot.target.classList[2]}`);
             }
         }
             
@@ -346,7 +356,7 @@ function titanMovement(dot){
                     resetTimerRed();          
                     node.classList.remove("red");
                     dot.target.classList.add("red");
-                    history(dot.target.classList[2],node.classList[2]);   
+                    hist.push(`Red: Moved Tile ${node.classList[2]} To Tile ${dot.target.classList[2]}`);
                     checkForTitanElimination();
                     dotOk3 = true;
                     break;
@@ -360,7 +370,7 @@ function titanMovement(dot){
                     resetTimerBlue();
                     node.classList.remove("blue");
                     dot.target.classList.add('blue');
-                    history(dot.target.classList[2],node.classList[2]);
+                    hist.push(`Blue: Moved Tile ${node.classList[2]} To Tile ${dot.target.classList[2]}`);
                     checkForTitanElimination();
                     dotOk3 = true;
                     break;
@@ -636,7 +646,7 @@ function checkForTitanElimination(){
                 elimaud.play();
                 dot.classList.remove("red");
                 movElim.push(dot.classList[2]);
-                console.log("Red Titan Eliminated");
+                hist.push("Red Titan Eliminated!")
                 el=true;
                 break;
             }
@@ -660,7 +670,7 @@ function checkForTitanElimination(){
                 elimaud.play();
                 dot.classList.remove("blue");
                 movElim.push(dot.classList[2]);
-                console.log("Blue Titan Eliminated!");
+                hist.push("Blue Titan Eliminated!")
                 el=true;
                 break;
             }
@@ -701,7 +711,7 @@ function rank(){
         rankbox.id  = "rankbox";
         rankbox.className = "leaderbox";
         rankbox.innerHTML = `
-                                <h3 style = "margin-bottom:20px;">Top High Scores</h1>
+                                <h3 style = "margin-bottom:20px;">Top High Scores</h3>
                                 <div>1)${JSON.parse(localStorage.getItem("leaderboard"))[0]}</div>    
                                 <div>2)${JSON.parse(localStorage.getItem("leaderboard"))[1]}</div>    
                                 <div>3)${JSON.parse(localStorage.getItem("leaderboard"))[2]}</div>    
@@ -726,6 +736,7 @@ function undo(){
                 node.classList.remove("blue");
             }
         }
+        hist.push("Undone");
         updatePoints();
         count--;
         changeTurn();
@@ -763,6 +774,7 @@ function undo(){
                             nodes.classList.add("red");
                             updatePoints();
                             count--;
+                            hist.push("Undone");
                             changeTurn();
                             resetTimerRed();
                             break;
@@ -771,6 +783,7 @@ function undo(){
                             nodes.classList.add("blue");
                             updatePoints();
                             count--;
+                            hist.push("Undone");
                             changeTurn();
                             resetTimerBlue();
                             break;
@@ -791,6 +804,7 @@ function redo(){
                     movCurrent.push(node.classList[2]);
                     movArr2.pop();
                     count++;
+                    hist.push("Redone");
                     updatePoints();
                     resetTimerBlue();
                     changeTurn();
@@ -805,6 +819,7 @@ function redo(){
                     movCurrent.push(node.classList[2]);
                     movArr2.pop();
                     count++;
+                    hist.push("Redone");
                     updatePoints();
                     resetTimerRed();
                     changeTurn();
@@ -830,6 +845,7 @@ function redo(){
                         }
                     }
                     count++;
+                    hist.push("Redone");
                     checkForTitanElimination();
                     updatePoints();
                     resetTimerBlue();
@@ -853,6 +869,7 @@ function redo(){
                         }
                     }
                     count++;
+                    hist.push("Redone");
                     checkForTitanElimination();
                     updatePoints();
                     resetTimerRed();
@@ -864,23 +881,24 @@ function redo(){
     }
 }
 
-function history(dot1,dot2){
-    if(count<=8){
-        if(count %2 !=0){
-            console.log(`Red: Placed Tile ${dot1}`);
-        }
-        else{
-            console.log(`Blue: Placed Tile ${dot1}`);
-        }
+function movHistory(){
+    const histbox = document.getElementById("histbox");
+    if(histbox){
+        histbox.remove();
+        moves.textContent = "⏳";
+        return;
     }
     else{
-        if(count %2 !=0){
-            console.log(`Red: Moved Tile ${dot2} to Tile ${dot1}`);
-        }
-        else{
-            console.log(`Blue: Moved Tile ${dot2} to Tile ${dot1}`);
-        }
-    }
-    
-}
+        moves.textContent = "❌";
+        const historybox = document.createElement("div");
+        historybox.className = "movbox";
+        historybox.id= "histbox";
+        historybox.innerHTML = `
+                                <h3 style = "margin-bottom:20px;">Moves</h3>
+                                ${hist.map((element,index)=>
+                                    `<div>${index+1}) ${element}</div>`).join('')}
+                                `;
+        turns.prepend(historybox);
 
+    }
+}
