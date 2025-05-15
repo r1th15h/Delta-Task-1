@@ -550,6 +550,7 @@ function updatePoints(){
 }
 
 function resets(){
+    hist = [];
     count = 0;
     redpts = 0;
     bluepts = 0;
