@@ -388,7 +388,7 @@ function titanMovement(dot){
 function gameOver(){
     document.body.innerHTML = '';
     let gameEndMsg = document.createElement("div");
-    gameEndMsg.textContent = "Game Over!";
+    gameEndMsg.textContent = "Game Over! Refresh To Play Again!";
     gameEndMsg.style.fontSize = "50px";
     gameEndMsg.style.fontWeight = "900";
     gameEndMsg.style.marginTop = "80px";
