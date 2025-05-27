@@ -12,7 +12,7 @@ body{
 
 .gamename{
     text-align: center;
-    margin: 20px 0;
+    /* margin: 20px 0; */
     font-size: 50px;
     color: rgb(7, 189, 189);
 }
@@ -226,6 +226,33 @@ body{
     overflow-y: auto;
     height: 250px;
     font-size: xx-large;
+}
+#instructions{
+    position: fixed;
+    background-color: black;
+    color: rgb(7, 172, 172);
+    z-index: 100;
+    overflow: auto;
+}
+
+.instname{
+    margin-top: 30px;
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.start{
+    text-align: center;
+    font-size: 10px;
+    font-weight: 900;
+    margin-bottom: 80px;
+}
+
+.para{
+    margin-top: 20px;
+    margin-left: 60px;
+    color: skyblue;
 }
 
 @media screen and (max-width:1024px) {

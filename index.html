@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Titan's Circuit</title>
-    <link rel="icon" href="assets/favicon.png">
-    <link rel="stylesheet" href="index.css">
-    <script src="index.js" defer></script>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Titan's Circuit</title>
+        <link rel="icon" href="assets/favicon.png">
+        <link rel="stylesheet" href="index.css">
+        <script src="index.js" defer></script>
+    </head>
+    <body>
+        <div id="instructions">
+            <h2 class="instname">Instructions</h2>
+            <div class="start">(CLICK ANYWHERE IN THE SCREEN TO START)</div>
+            <p class="para">‣ PLAYERS PLACE FOUR TITANS EACH</p>
+            <p class="para">‣ OUTER CIRCUIT MUST BE FILLED FIRST TO MOVE IN</p>
+            <p class="para">‣ TITAN CAN ONLY MOVE THROUGH THE CONNECTING EDGES</p>
+            <p class="para">‣ IF A TITAN IS SORROUNDED BY OPPONENT TITANS ON EACH CONNECTING EDGE, IT IS ELIMINATED</p>
+            <p class="para">‣ IF BOTH NODES OF A EDGE IS OCCUPIED BY THE SAME TITAN, THEN THE EDGE IS SAID TO BE CAPTURED.</p>
+            <p class="para">‣ SCORE IS CALCULATED BASED ON THE EDGE CAPTURED</p>
+            <p class="para">‣ GAME OVER IF INNER CIRCUIT IS FILLED OR TOTAL TIME GETS ELAPSED</p>
+        </div>
         <h1 class="gamename">Titan's Circuit</h1>
         <div class="flexbtns">
             <div>
@@ -36,47 +47,47 @@
                 <div class="btnname">History</div>
             </div>
         </div>
-    <div class="turns" id="turnss">Turn : <span id="turn">Red</span></div>
-    <div class="main">
-        <div class="timers">
-            <div class="timersbox">
-                <div>Red Time:</div>
-                <div class="time" id="redplayertime"></div>
+        <div class="turns" id="turnss">Turn : <span id="turn">Red</span></div>
+        <div class="main">
+            <div class="timers">
+                <div class="timersbox">
+                    <div>Red Time:</div>
+                    <div class="time" id="redplayertime"></div>
+                </div>
+                <div class="timersbox">
+                    <div>Total Time:</div>
+                    <div class="time" id="totaltime"></div>
+                </div>
+                <div class="timersbox">
+                    <div>Blue Time:</div>
+                    <div class="time" id="blueplayertime"></div>
+                </div>
+            </div>  
+            <div class="box" id="mainbox">
+                    <div class="dot2 dots 2 dots1"></div>
+                    <div class="dot3 dots 3 dots1"></div>
+                    <div class="dot8 dots 8 dots2"></div>
+                    <div class="dot9 dots 9 dots2"></div>
+                    <div class="dot14 dots 14 dots3"></div>
+                    <div class="dot15 dots 15 dots3"></div>
+                    <div class="dot1 dots 1 dots41"></div>
+                    <div class="dot7 dots 7 dots41"></div>
+                    <div class="dot13 dots 13 dots41"></div>
+                    <div class="dot16 dots 16 dots42"></div>
+                    <div class="dot10 dots 10 dots42"></div>
+                    <div class="dot4 dots 4 dots42"></div>
+                    <div class="dot18 dots 18 dots5"></div>
+                    <div class="dot17 dots 17 dots5"></div>
+                    <div class="dot12 dots 12 dots6"></div>
+                    <div class="dot11 dots 11 dots6"></div>
+                    <div class="dot6 dots 6 dots7"></div>
+                    <div class="dot5 dots 5 dots7"></div>
             </div>
-            <div class="timersbox">
-                <div>Total Time:</div>
-                <div class="time" id="totaltime"></div>
+            <div class="points">
+                <div class="subpoints subpoints1">Points</div>
+                <div class="subpoints">Red: <span class="pointsnum" id="redpts"></span></div>
+                <div class="subpoints">Blue: <span class="pointsnum" id="bluepts"></span></div>
             </div>
-            <div class="timersbox">
-                <div>Blue Time:</div>
-                <div class="time" id="blueplayertime"></div>
-            </div>
-        </div>  
-        <div class="box" id="mainbox">
-                <div class="dot2 dots 2 dots1"></div>
-                <div class="dot3 dots 3 dots1"></div>
-                <div class="dot8 dots 8 dots2"></div>
-                <div class="dot9 dots 9 dots2"></div>
-                <div class="dot14 dots 14 dots3"></div>
-                <div class="dot15 dots 15 dots3"></div>
-                <div class="dot1 dots 1 dots41"></div>
-                <div class="dot7 dots 7 dots41"></div>
-                <div class="dot13 dots 13 dots41"></div>
-                <div class="dot16 dots 16 dots42"></div>
-                <div class="dot10 dots 10 dots42"></div>
-                <div class="dot4 dots 4 dots42"></div>
-                <div class="dot18 dots 18 dots5"></div>
-                <div class="dot17 dots 17 dots5"></div>
-                <div class="dot12 dots 12 dots6"></div>
-                <div class="dot11 dots 11 dots6"></div>
-                <div class="dot6 dots 6 dots7"></div>
-                <div class="dot5 dots 5 dots7"></div>
         </div>
-        <div class="points">
-            <div class="subpoints subpoints1">Points</div>
-            <div class="subpoints">Red: <span class="pointsnum" id="redpts"></span></div>
-            <div class="subpoints">Blue: <span class="pointsnum" id="bluepts"></span></div>
-        </div>
-    </div>
-</body>
+    </body>
 </html>

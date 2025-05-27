@@ -14,10 +14,23 @@ const bp = document.getElementById("bluepts");
 const moves = document.getElementById("history");
 const pausename = document.getElementById("pausename");
 const leaderboard = document.getElementById("leaderboard");
+const instructions = document.getElementById("instructions");
+instructions.style.width = `${innerWidth}px`;
+instructions.style.height = `${innerHeight}px`;
 const moveaud = new Audio("audio/move.mp3");
 const elimaud = new Audio("audio/titanelim.mp3");
 const winaud = new Audio("audio/win.mp3");
-
+instructions.addEventListener("click",()=>{
+    instructions.remove();
+    let totalTimeCounter = setInterval(()=>{
+        if(totalTime==0){
+            clearInterval(totalTimeCounter);
+            gameOver();
+        }
+        gameTime.innerHTML=`${totalTime}`;
+        totalTime-=1;
+    },1000);
+})
 
 let movCurrent = [];
 let movArr2 = [];
@@ -115,15 +128,6 @@ edgeLines.forEach(({row,column,origin,rotate,translate})=>{
     edgeDivs.style.transform = `rotate(${rotate}deg) translateY(${translate}px)`;
     box.append(edgeDivs);
 })
-
-let totalTimeCounter = setInterval(()=>{
-    if(totalTime==0){
-        clearInterval(totalTimeCounter);
-        gameOver();
-    }
-    gameTime.innerHTML=`${totalTime}`;
-    totalTime-=1;
-},1000);
 
 reset.addEventListener("click", resets);
 pause.addEventListener("click",paused);
