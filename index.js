@@ -17,12 +17,13 @@ const leaderboard = document.getElementById("leaderboard");
 const instructions = document.getElementById("instructions");
 instructions.style.width = `${innerWidth}px`;
 instructions.style.height = `${innerHeight}px`;
+let totalTimeCounter;
 const moveaud = new Audio("audio/move.mp3");
 const elimaud = new Audio("audio/titanelim.mp3");
 const winaud = new Audio("audio/win.mp3");
 instructions.addEventListener("click",()=>{
     instructions.remove();
-    let totalTimeCounter = setInterval(()=>{
+        totalTimeCounter = setInterval(()=>{
         if(totalTime==0){
             clearInterval(totalTimeCounter);
             gameOver();
@@ -45,6 +46,7 @@ let count = 0;
 let playtime;
 let redpts=0;
 let bluepts=0;
+let isredo = false;
 rp.textContent = `${redpts}`;
 bp.textContent = `${bluepts}`;
 
@@ -194,6 +196,9 @@ function changeTurn(){
 
 function randomMove(){
     let dotOk4 = false;
+    movArr2 = [];
+    movArr5 = [];
+    isredo = true;
     if(count<6){
         if(count %2 == 0 ){
             for(let j=1;j<=6;j++){
@@ -287,7 +292,9 @@ function randomMove(){
 function titanMovement(dot){
     let dotOk1 = false;
     let dotOk2 = false;
-
+    movArr2 = [];
+    movArr5 = [];
+    isredo = true;
     if (count<6){
         for(let i=1 ;i<=6;i++){
             if(dot.target.classList.contains(`${i}`)){
@@ -298,6 +305,7 @@ function titanMovement(dot){
         if(dotOk1 && !dot.target.classList.contains("red") && !dot.target.classList.contains("blue")){
             movCurrent.push(dot.target.classList[2]);
             count++;
+            isredo = true;
             moveaud.play();
             changeTurn();
             if(count % 2 !=0){
@@ -322,6 +330,7 @@ function titanMovement(dot){
         if(dotOk2 && !dot.target.classList.contains("red") && !dot.target.classList.contains("blue")){
             movCurrent.push(dot.target.classList[2]);
             count++;
+            isredo = true;
             moveaud.play();
             changeTurn();
             if(count % 2 !=0){
@@ -348,6 +357,7 @@ function titanMovement(dot){
                     movCurrent.push(dot.target.classList[2]);
                     movArr3.push(node.classList[2]);
                     count++;
+                    isredo = true;
                     moveaud.play();
                     changeTurn();
                     resetTimerRed();          
@@ -362,6 +372,7 @@ function titanMovement(dot){
                     movCurrent.push(dot.target.classList[2]);
                     movArr3.push(node.classList[2]);
                     count++;
+                    isredo = true;
                     moveaud.play();
                     changeTurn();
                     resetTimerBlue();
@@ -719,9 +730,11 @@ function rank(){
 }
 
 function undo(){
+    isredo = false;
     if(count>0 && count <=8){
         let temptitan1 = movCurrent.pop();
         movArr2.push(temptitan1);
+        count--;
         if(count % 2 !=0){
             resetTimerBlue();
         }
@@ -736,7 +749,6 @@ function undo(){
         }
         hist.push("Undone");
         updatePoints();
-        count--;
         changeTurn();
     }
     else if(count>8){
@@ -774,7 +786,7 @@ function undo(){
                             count--;
                             hist.push("Undone");
                             changeTurn();
-                            resetTimerRed();
+                            resetTimerBlue();
                             break;
                         }
                         else{
@@ -783,7 +795,7 @@ function undo(){
                             count--;
                             hist.push("Undone");
                             changeTurn();
-                            resetTimerBlue();
+                            resetTimerRed();
                             break;
                         }
                     }
@@ -794,89 +806,92 @@ function undo(){
 }
 
 function redo(){
-    if(count<8 && movArr2[0]){
-        if(count % 2 !=0){
-            for(let node of dots){
-                if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
-                    node.classList.add("blue");
-                    movCurrent.push(node.classList[2]);
-                    movArr2.pop();
-                    count++;
-                    hist.push("Redone");
-                    updatePoints();
-                    resetTimerBlue();
-                    changeTurn();
-                    break;
+    if(!isredo){
+        if(count<8 && movArr2[0]){
+            if(count % 2 !=0){
+                for(let node of dots){
+                    if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
+                        node.classList.add("blue");
+                        movCurrent.push(node.classList[2]);
+                        movArr2.pop();
+                        count++;
+                        hist.push("Redone");
+                        updatePoints();
+                        resetTimerBlue();
+                        changeTurn();
+                        break;
+                    }
                 }
+            }
+            else{
+                for(let node of dots){
+                    if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
+                        node.classList.add("red");
+                        movCurrent.push(node.classList[2]);
+                        movArr2.pop();
+                        count++;
+                        hist.push("Redone");
+                        updatePoints();
+                        resetTimerRed();
+                        changeTurn();
+                        break;
+                    }
+                }
+            
             }
         }
-        else{
-            for(let node of dots){
-                if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
-                    node.classList.add("red");
-                    movCurrent.push(node.classList[2]);
-                    movArr2.pop();
-                    count++;
-                    hist.push("Redone");
-                    updatePoints();
-                    resetTimerRed();
-                    changeTurn();
-                    break;
+        else if(count>=8 && movArr5[0]){
+            if(count % 2 !=0){
+                for(let node of dots){
+                    if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
+                        node.classList.add("blue");
+                        movCurrent.push(node.classList[2]);
+                        movArr2.pop();
+                        for(let nodes of dots){
+                            if(nodes.classList.contains(`${movArr5[movArr5.length-1]}`)){
+                                nodes.classList.remove("red");
+                                nodes.classList.remove("blue");
+                                movArr3.push(movArr5.pop());
+                                break;
+                            }
+                        }
+                        count++;
+                        hist.push("Redone");
+                        checkForTitanElimination();
+                        updatePoints();
+                        resetTimerBlue();
+                        changeTurn();
+                        break;
+                    }
                 }
             }
-           
+            else{
+                for(let node of dots){
+                    if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
+                        node.classList.add("red");
+                        movCurrent.push(node.classList[2]);
+                        movArr2.pop();
+                        for(let nodes of dots){
+                            if(nodes.classList.contains(`${movArr5[movArr5.length-1]}`)){
+                                nodes.classList.remove("red");
+                                nodes.classList.remove("blue");
+                                movArr3.push(movArr5.pop());
+                                break;
+                            }
+                        }
+                        count++;
+                        hist.push("Redone");
+                        checkForTitanElimination();
+                        updatePoints();
+                        resetTimerRed();
+                        changeTurn();
+                        break;
+                    }
+                }
+            }
         }
     }
-    else if(count>=8 && movArr5[0]){
-        if(count % 2 !=0){
-            for(let node of dots){
-                if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
-                    node.classList.add("blue");
-                    movCurrent.push(node.classList[2]);
-                    movArr2.pop();
-                    for(let nodes of dots){
-                        if(nodes.classList.contains(`${movArr5[movArr5.length-1]}`)){
-                            nodes.classList.remove("red");
-                            nodes.classList.remove("blue");
-                            movArr3.push(movArr5.pop());
-                            break;
-                        }
-                    }
-                    count++;
-                    hist.push("Redone");
-                    checkForTitanElimination();
-                    updatePoints();
-                    resetTimerBlue();
-                    changeTurn();
-                    break;
-                }
-            }
-        }
-        else{
-            for(let node of dots){
-                if(node.classList.contains(`${movArr2[movArr2.length-1]}`)){
-                    node.classList.add("red");
-                    movCurrent.push(node.classList[2]);
-                    movArr2.pop();
-                    for(let nodes of dots){
-                        if(nodes.classList.contains(`${movArr5[movArr5.length-1]}`)){
-                            nodes.classList.remove("red");
-                            nodes.classList.remove("blue");
-                            movArr3.push(movArr5.pop());
-                            break;
-                        }
-                    }
-                    count++;
-                    hist.push("Redone");
-                    checkForTitanElimination();
-                    updatePoints();
-                    resetTimerRed();
-                    changeTurn();
-                    break;
-                }
-            }
-        }
-    }
+    
 }
 
 function movHistory(){
