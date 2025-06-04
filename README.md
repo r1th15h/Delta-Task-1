@@ -3,7 +3,7 @@
 ---
 ## Features Implemented
 * Completed Normal Mode.
-* Completed Hacker Mode, except for Titan movement animations.
+* Completed Hacker Mode (Except for Titan movement animations)
 ---
 ## Bugs
 * Minor issues with responsive UI on smaller screens.
