@@ -32,6 +32,12 @@ instructions.addEventListener("click",()=>{
         totalTime-=1;
     },1000);
 })
+function screenResize(){
+    instructions.style.width = `${innerWidth}px`;
+    instructions.style.height = `${innerHeight}px`;
+}
+addEventListener("resize",screenResize)
+
 
 let movCurrent = [];
 let movArr2 = [];
@@ -47,6 +53,7 @@ let playtime;
 let redpts=0;
 let bluepts=0;
 let isredo = false;
+let isundo = false;
 rp.textContent = `${redpts}`;
 bp.textContent = `${bluepts}`;
 
@@ -196,8 +203,6 @@ function changeTurn(){
 
 function randomMove(){
     let dotOk4 = false;
-    movArr2 = [];
-    movArr5 = [];
     isredo = true;
     if(count<6){
         if(count %2 == 0 ){
@@ -284,12 +289,20 @@ function randomMove(){
         }
     }
     else{
+        isundo = true;
         count++;
         changeTurn();
+        movCurrent = [];
+        movArr3 = [];
+        movElim = [];
+         movArr2 = [];
+        movArr5 = [];
+        isredo = true;
     }
 }
 
 function titanMovement(dot){
+    isundo = false;
     let dotOk1 = false;
     let dotOk2 = false;
     movArr2 = [];
@@ -731,6 +744,7 @@ function rank(){
 
 function undo(){
     isredo = false;
+    if(isundo) return
     if(count>0 && count <=8){
         let temptitan1 = movCurrent.pop();
         movArr2.push(temptitan1);
@@ -753,8 +767,8 @@ function undo(){
     }
     else if(count>8){
         let temptitan1 = movCurrent.pop();
+        if (temptitan1==undefined) return
         movArr2.push(temptitan1);
-
         if(movElim[movElim.length-1] !=0){
             for(let dote of dots){
                 if(dote.classList.contains(`${movElim[movElim.length-1]}`)){
@@ -779,7 +793,9 @@ function undo(){
                 node.classList.remove("blue");
                 for(let nodes of dots){
                     if(nodes.classList.contains(`${movArr3[movArr3.length-1]}`)){
-                        movArr5.push(movArr3.pop());
+                        let temp = movArr3.pop();
+                        if(temp !== undefined) movArr5.push(temp);
+                        else return;
                         if(count % 2 !=0){
                             nodes.classList.add("red");
                             updatePoints();
