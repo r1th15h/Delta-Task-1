@@ -40,10 +40,10 @@ addEventListener("resize",screenResize)
 
 
 let movCurrent = [];
-let movArr2 = [];
-let movArr3 = [];
+let movArr2 = []; //undone destination tiles for redo.
+let movArr3 = []; //where piece moved from
 let movElim = [];
-let movArr5 = [];
+let movArr5 = []; //undone source tiles for redo.
 let hist = [];
 let redTimer=15;
 let blueTimer=15;
@@ -366,7 +366,7 @@ function titanMovement(dot){
             let stringNums = String(nums);
             let dotOk3 = false;
             for(let node of dots){
-                if(count % 2 ==0 && node.classList.contains(`${stringNums}`) && node.classList.contains("red") && !dot.target.classList.contains("blue")){
+                if(count % 2 ==0 && node.classList.contains(`${stringNums}`) && node.classList.contains("red") && !dot.target.classList.contains("blue") && !dot.target.classList.contains("red")){
                     movCurrent.push(dot.target.classList[2]);
                     movArr3.push(node.classList[2]);
                     count++;
@@ -381,7 +381,7 @@ function titanMovement(dot){
                     dotOk3 = true;
                     break;
                 }
-                else if(count % 2 !=0 && node.classList.contains(String(nums)) && node.classList.contains("blue") && !dot.target.classList.contains("red")){
+                else if(count % 2 !=0 && node.classList.contains(String(nums)) && node.classList.contains("blue") && !dot.target.classList.contains("red") && !dot.target.classList.contains("blue")){
                     movCurrent.push(dot.target.classList[2]);
                     movArr3.push(node.classList[2]);
                     count++;
