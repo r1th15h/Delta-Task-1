@@ -1,5 +1,4 @@
 # Delta Webdev Task-1
-**Titan's Circuit...** -[Demo] (https://rithish555.github.io/Delta-Task-1/)
 ---
 ## Features Implemented
 * Completed Normal Mode.
