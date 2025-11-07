@@ -6,5 +6,4 @@
 ---
 ## Bugs
 * Minor issues with responsive UI on smaller screens.
-* No known bugs at the moment. If any are found, I’m ready to fix them.
 
